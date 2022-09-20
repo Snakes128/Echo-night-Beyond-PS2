@@ -15,32 +15,8 @@ namespace EchoNightBeyondTool
 
         public static bool extractFile(FileInfo file)
         {
-            //primero de todo cargamos el binario y leemos 
-
-            //4 bytes no me hacen falta
-            //4 bytes, tamaño total, tendremos que cambiarlo si es diferente, recordar que el tamaño total tiene que ser múltiplo de 32
-            //4 bytes vacios??
-            //4 bytes numero de rangos
-
-            //4 bytes numero de punteros
-            //4 bytes posición donde empiezan los punteros
-            //4 bytes vacios??
-            //4 bytes vacios??
-
-            //Estructura de rangos, normalmente solo hay 1 rango por lo tanto sera:
-            //4 bytes inicio del rango == 0
-            //4 bytes fin rango == numero de punteros - 1
-
-            //Ahora ya podemos extraer los punteros.
-            //Una vez extraidos, procedemos a extraer los textos hasta que haya un 0, que significa fin del texto/puntero y pasamos a otro. Si el 
-            //puntero es 0 lo obviamos, pero lo necesitamos para reconstruir todo.
-
-            //Vale una vez todo estudiado, procedemos a guardar el tamaño del archivo y el binario en formato64, para extraerlo todo sin problema.
-
             Console.WriteLine("Archivo " + file.Name);
 
-            //cargamos la tabla para usar luego
-            //Dictionary<string, string> tableExport;
             if (!File.Exists(exportTable))
             {
                 Utils.showConsoleText("La tabla de carácteres para exportar no existe, creala en la carpeta donde está el exe y vuelve a intentarlo.");
@@ -48,13 +24,6 @@ namespace EchoNightBeyondTool
             }
 
             var tableExport = Utils.loadExportTable(exportTable);
-
-            /*string newTxt;
-            if (isModeTest)
-                newTxt = "test.txt";
-            else
-                newTxt = file.FullName.Substring(0, (int)file.FullName.Length - extensionFMG.Length) + extensionTXT;
-            */
 
             //creamos un archivo donde guardaremos la información necesaria del binario.
             string newTxt = file.FullName.Substring(0, (int)file.FullName.Length - extensionFMG.Length) + extensionTXT;
@@ -72,11 +41,10 @@ namespace EchoNightBeyondTool
             int totalPointers = Reader.ReadInt32();
             int posInitPointers = Reader.ReadInt32();
 
-
-            //aquí creamos los distintos rangos y los guardamos en una list, para usar luego.
             //nos ponemos donde empiezan los rangos que es en 0x20
             Stream.Position = 32;
 
+            //aquí creamos los distintos rangos y los guardamos en una list, para usar luego.
             List<FromFilesData> ranges = new List<FromFilesData>();
 
             for (int i = 0; i < totalRange; ++i)
@@ -158,7 +126,6 @@ namespace EchoNightBeyondTool
                         {
                             //termina el texto, comprobamos que el byte es el último y añadimos la cadena a el txt.
                             fileTxt.WriteLine(text);
-                            //fileTxt.Flush();
                             break;
                         }
                     }
@@ -196,10 +163,6 @@ namespace EchoNightBeyondTool
             table = Utils.loadImportTable(importTable);
 
             string[] allLines = File.ReadAllLines(file.FullName);
-
-            //despues de leer la lineas tengo que separarlo en comentarios // y lineas de rangos
-            //una vez hecho eso me pondré a montar el binario nuevo, los primeros 32bytes son fijos y a partir de ahí empezaré a 
-            //meter los rangos, antes de eso los rangos los meteré en distintas estructuras como he hecho en la exportación
 
             List<string> listComments = new List<string>();
             List<string> listPointers = new List<string>();
@@ -261,12 +224,6 @@ namespace EchoNightBeyondTool
                 listRangesStruct.Add(new FromFilesData(rangeInit, rangeCurrent, listPointersText));
 
             totalRanges = listRangesStruct.Count;
-
-            /*string newFMGFile;
-            if (isModeTest)
-                newFMGFile = "test.fmg";
-            else
-                newFMGFile = file.FullName.Substring(0, (int)file.FullName.Length - extensionFMG.Length) + extensionFMG;*/
 
             string newFMGFile = file.FullName.Substring(0, (int)file.FullName.Length - extensionFMG.Length) + extensionFMG;
 
@@ -398,7 +355,6 @@ namespace EchoNightBeyondTool
             //ahora con todas las posiciones de los punteros, podemos ir al inicio y empezar a ponerlos.
             for (int i = 0; i < posAllPointers.Count; ++i)
                 Writer.Write(posAllPointers[i]);
-
 
             Writer.Close();
 

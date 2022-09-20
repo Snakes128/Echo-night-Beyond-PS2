@@ -11,7 +11,11 @@ namespace EchoNightBeyondTool
             Console.WriteLine("Herramienta del juego Echo Night Beyond para PS2.");
             Console.WriteLine("\n");
 
-            if (File.Exists(args[0]))
+            if (args.Length <= 0)
+            {
+                Utils.showConsoleText("Es necesario pasarle un archivo fmg o txt para exportar/importar");
+            }
+            else if (File.Exists(args[0]))
             {
                 FileInfo fileInfo = new FileInfo(args[0]);
 
@@ -29,18 +33,24 @@ namespace EchoNightBeyondTool
         {
             Utils.showConsoleText("Extrayendo binario a txt...");
 
-            FromFilesConvert.extractFile(file);
+            bool result = FromFilesConvert.extractFile(file);
 
-            Utils.showConsoleText("Archivo extraido correctamente");
+            if(!result)
+                Utils.showConsoleText("Ha habido un error en la extracción del archivo, resuelva el problema y vuelva a intentarlo.");
+            else
+                Utils.showConsoleText("Archivo extraido correctamente");
         }
 
         static void importTxtToBinary(FileInfo file)
         {
             Utils.showConsoleText("Creando binario de un txt...");
 
-            FromFilesConvert.importFile(file);
+            bool result = FromFilesConvert.importFile(file);
 
-            Utils.showConsoleText("Archivo creado correctamente");
+            if (!result)
+                Utils.showConsoleText("Ha habido un error en la creación del archivo, resuelva el problema y vuelva a intentarlo.");
+            else
+                Utils.showConsoleText("Archivo creado correctamente");
         }
     }
 }
