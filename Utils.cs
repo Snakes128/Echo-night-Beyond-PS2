@@ -157,5 +157,13 @@ namespace EchoNightBeyondTool
         {
             return firstArray.SequenceEqual(secondArray);
         }
+
+        public static void showConsoleText(string text, bool lineJumpExtra = false)
+        {
+            Console.WriteLine(text);
+
+            if (lineJumpExtra)
+                Console.WriteLine("\n");
+        }
     }
 }
