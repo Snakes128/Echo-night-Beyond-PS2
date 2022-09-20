@@ -11,6 +11,8 @@ namespace EchoNightBeyondTool
             Console.WriteLine("Herramienta del juego Echo Night Beyond para PS2.");
             Console.WriteLine("\n");
 
+            bool removePause = false;
+
             if (args.Length <= 0)
             {
                 Utils.showConsoleText("Es necesario pasarle un archivo fmg o txt para exportar/importar");
@@ -23,10 +25,13 @@ namespace EchoNightBeyondTool
                     extractBinaryToTxt(fileInfo);
                 else if (fileInfo.Extension.CompareTo(FromFilesConvert.extensionTXT) == 0)
                     importTxtToBinary(fileInfo);
+
+                if (args.Length == 2 && args[1].CompareTo("true") == 0)
+                    removePause = true;
             }
 
-            Console.Read();
-
+            if(!removePause)
+                Console.Read();
         }
 
         static void extractBinaryToTxt(FileInfo file)
